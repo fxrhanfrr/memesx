@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import { useAuth } from 'project\frontend\src\context\AuthContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login() {
   const [email, setEmail] = useState('');

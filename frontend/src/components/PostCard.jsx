@@ -10,7 +10,7 @@ import {
   Play
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useApi } from '../hooks/useApi';
+import { useApi } from '../hooks/useInfiniteScroll.jsx';
 
 export default function PostCard({ post, onVote }) {
   const { currentUser } = useAuth();
