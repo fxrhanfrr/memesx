@@ -1,5 +1,6 @@
 import express from 'express';
 import { db, auth } from '../config/firebase.js';
+import admin from '../config/firebase.js'; // Added this line
 import { authenticateToken, requireAdmin } from '../middlewares/auth.js';
 
 const router = express.Router();

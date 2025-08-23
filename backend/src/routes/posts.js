@@ -1,5 +1,6 @@
 import express from 'express';
 import { db, storage } from '../config/firebase.js';
+import admin from '../config/firebase.js'; // Added this line
 import { authenticateToken } from '../middlewares/auth.js';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
