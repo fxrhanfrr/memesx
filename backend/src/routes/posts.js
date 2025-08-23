@@ -1,9 +1,10 @@
 import express from 'express';
-import { db, storage } from '../config/firebase.js';
-import admin from '../config/firebase.js'; // Added this line
+import { db } from '../config/firebase.js';
+import admin from '../config/firebase.js';
 import { authenticateToken } from '../middlewares/auth.js';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import { uploadToCloudinary, deleteFromCloudinary } from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -142,20 +143,16 @@ router.post('/', authenticateToken, upload.single('media'), async (req, res) => 
     let mediaUrl = '';
     let mediaType = '';
 
-    // Upload media file if provided
+    // Upload media file to Cloudinary if provided
     if (req.file) {
-      const fileName = `${uuidv4()}_${req.file.originalname}`;
-      const file = storage.bucket().file(`posts/${fileName}`);
-      
-      await file.save(req.file.buffer, {
-        metadata: {
-          contentType: req.file.mimetype,
-        },
-      });
-
-      await file.makePublic();
-      mediaUrl = `https://storage.googleapis.com/${storage.bucket().name}/posts/${fileName}`;
-      mediaType = req.file.mimetype.startsWith('video/') ? 'video' : 'image';
+      try {
+        const uploadResult = await uploadToCloudinary(req.file, 'memex/posts');
+        mediaUrl = uploadResult.url;
+        mediaType = req.file.mimetype.startsWith('video/') ? 'video' : 'image';
+      } catch (uploadError) {
+        console.error('Media upload error:', uploadError);
+        return res.status(500).json({ error: 'Failed to upload media file' });
+      }
     }
 
     const now = new Date();

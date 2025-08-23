@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Search, 
@@ -20,7 +20,18 @@ export default function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -41,38 +52,37 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+      <div className="container">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">M</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white">MemeX</span>
+          <Link to="/" className="navbar-brand">
+            <div className="navbar-logo">M</div>
+            <span>MemeX</span>
           </Link>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+          <div className="hidden md:flex navbar-search">
             <form onSubmit={handleSearch} className="w-full">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="navbar-search-icon" />
                 <input
                   type="text"
                   placeholder="Search MemeX"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 dark:text-white"
+                  className="w-full"
                 />
               </div>
             </form>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center gap-4">
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 transition-colors"
+              className="btn btn-ghost"
+              aria-label="Toggle theme"
             >
               {isDark ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
             </button>
@@ -81,21 +91,22 @@ export default function Navbar() {
               <>
                 <Link
                   to="/"
-                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 transition-colors"
+                  className="btn btn-ghost"
+                  aria-label="Home"
                 >
                   <Home className="w-6 h-6" />
                 </Link>
                 <Link
                   to="/create"
-                  className="flex items-center space-x-2 bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-colors"
+                  className="btn btn-primary"
                 >
                   <Plus className="w-4 h-4" />
-                  <span className="font-medium">Create</span>
+                  <span>Create</span>
                 </Link>
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   >
                     {userProfile?.photoURL ? (
                       <img
@@ -104,7 +115,7 @@ export default function Navbar() {
                         className="w-8 h-8 rounded-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-white" />
                       </div>
                     )}
@@ -113,7 +124,7 @@ export default function Navbar() {
                     </span>
                   </button>
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 border dark:border-gray-700">
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg py-1 border dark:border-gray-700 animate-slide-down">
                       <Link
                         to={`/user/${currentUser.uid}`}
                         className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -134,16 +145,16 @@ export default function Navbar() {
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <Link
                   to="/login"
-                  className="text-orange-500 hover:text-orange-600 font-medium"
+                  className="btn btn-ghost"
                 >
                   Log In
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-colors font-medium"
+                  className="btn btn-primary"
                 >
                   Sign Up
                 </Link>
@@ -155,64 +166,65 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="p-2 text-gray-600 dark:text-gray-300"
+              className="btn btn-ghost"
+              aria-label="Toggle mobile menu"
             >
               {showMobileMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Horizontal Layout */}
         {showMobileMenu && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4 animate-slide-down">
             {/* Mobile Search */}
             <form onSubmit={handleSearch} className="mb-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="navbar-search-icon" />
                 <input
                   type="text"
                   placeholder="Search MemeX"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 dark:text-white"
+                  className="form-input w-full pl-10"
                 />
               </div>
             </form>
 
-            {/* Mobile Navigation */}
-            <div className="space-y-2">
+            {/* Mobile Navigation - Horizontal */}
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={toggleTheme}
-                className="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+                className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
               >
-                {isDark ? <Sun className="w-5 h-5 mr-3" /> : <Moon className="w-5 h-5 mr-3" />}
-                {isDark ? 'Light Mode' : 'Dark Mode'}
+                {isDark ? <Sun className="w-4 h-4 mr-2" /> : <Moon className="w-4 h-4 mr-2" />}
+                {isDark ? 'Light' : 'Dark'}
               </button>
 
               {currentUser ? (
                 <>
                   <Link
                     to="/"
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
-                    <Home className="w-5 h-5 mr-3" />
+                    <Home className="w-4 h-4 mr-2" />
                     Home
                   </Link>
                   <Link
                     to="/create"
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
-                    <Plus className="w-5 h-5 mr-3" />
-                    Create Post
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create
                   </Link>
                   <Link
                     to={`/user/${currentUser.uid}`}
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
-                    <User className="w-5 h-5 mr-3" />
+                    <User className="w-4 h-4 mr-2" />
                     Profile
                   </Link>
                   <button
@@ -220,24 +232,24 @@ export default function Navbar() {
                       handleLogout();
                       setShowMobileMenu(false);
                     }}
-                    className="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
                   >
-                    <LogOut className="w-5 h-5 mr-3" />
-                    Log out
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
                   </button>
                 </>
               ) : (
                 <>
                   <Link
                     to="/login"
-                    className="block px-3 py-2 text-orange-500 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md font-medium"
+                    className="flex items-center px-3 py-2 text-primary-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md font-medium text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     Log In
                   </Link>
                   <Link
                     to="/signup"
-                    className="block px-3 py-2 bg-orange-500 text-white rounded-md font-medium text-center"
+                    className="flex items-center px-3 py-2 bg-primary-500 text-white rounded-md font-medium text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     Sign Up

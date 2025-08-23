@@ -15,84 +15,85 @@ export default function Sidebar() {
   const popularCommunities = communitiesData?.communities || [];
 
   return (
-    <div className="w-80 space-y-4">
-      {/* Navigation Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-white mb-3">Menu</h2>
-          <nav className="space-y-2">
+    <div className="w-full lg:w-80 space-y-6">
+      {/* Navigation Section - Horizontal Layout */}
+      <div className="sidebar">
+        <div className="sidebar-section">
+          <h2 className="sidebar-title mb-4">Menu</h2>
+          <nav className="flex flex-wrap gap-3">
             <Link
               to="/"
-              className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors"
+              className="community-item flex-shrink-0 min-w-[120px]"
             >
-              <Home className="w-5 h-5" />
-              <span>Home</span>
+              <Home className="w-5 h-5 text-primary-500" />
+              <div className="community-info">
+                <h4>Home</h4>
+                <p className="text-xs">Discover trending content</p>
+              </div>
             </Link>
             <Link
               to="/popular"
-              className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors"
+              className="community-item flex-shrink-0 min-w-[120px]"
             >
-              <TrendingUp className="w-5 h-5" />
-              <span>Popular</span>
+              <TrendingUp className="w-5 h-5 text-primary-500" />
+              <div className="community-info">
+                <h4>Popular</h4>
+                <p className="text-xs">Most shared content</p>
+              </div>
             </Link>
             {currentUser && (
               <Link
                 to="/create"
-                className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors"
+                className="community-item flex-shrink-0 min-w-[120px]"
               >
-                <Plus className="w-5 h-5" />
-                <span>Create Post</span>
+                <Plus className="w-5 h-5 text-primary-500" />
+                <div className="community-info">
+                  <h4>Create Post</h4>
+                  <p className="text-xs">Share something new</p>
+                </div>
               </Link>
             )}
             <Link
               to="/communities"
-              className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 rounded-md transition-colors"
+              className="community-item flex-shrink-0 min-w-[120px]"
             >
-              <Users className="w-5 h-5" />
-              <span>Communities</span>
+              <Users className="w-5 h-5 text-primary-500" />
+              <div className="community-info">
+                <h4>Communities</h4>
+                <p className="text-xs">Find your interests</p>
+              </div>
             </Link>
           </nav>
         </div>
       </div>
 
-      {/* Popular Communities Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="p-4">
-          <div className="flex items-center space-x-2 mb-3">
-            <Award className="w-5 h-5 text-orange-500" />
-            <h2 className="font-semibold text-gray-900 dark:text-white">Popular Communities</h2>
+      {/* Popular Communities Section - Horizontal Cards */}
+      <div className="sidebar">
+        <div className="sidebar-section">
+          <div className="flex items-center gap-2 mb-4">
+            <Award className="w-5 h-5 text-primary-500" />
+            <h2 className="sidebar-title">Popular Communities</h2>
           </div>
-          <div className="space-y-3">
+          <div className="flex flex-wrap gap-3">
             {popularCommunities.map((community, index) => (
               <Link
                 key={community.id}
                 to={`/r/${community.name}`}
-                className="flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 px-2 py-2 rounded-md transition-colors group"
+                className="community-item flex-shrink-0 min-w-[140px]"
               >
-                <div className="flex items-center space-x-2 flex-1">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    {index + 1}
-                  </span>
-                  <div className="w-6 h-6 rounded-full bg-orange-500 flex-shrink-0 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">
-                      {community.displayName.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-orange-600">
-                      r/{community.name}
-                    </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {community.memberCount.toLocaleString()} members
-                    </p>
-                  </div>
+                <div className="community-avatar">
+                  {community.displayName.charAt(0).toUpperCase()}
+                </div>
+                <div className="community-info">
+                  <h4>r/{community.name}</h4>
+                  <p className="text-xs">{community.memberCount.toLocaleString()} members</p>
                 </div>
               </Link>
             ))}
           </div>
           <Link
             to="/communities"
-            className="block text-center text-sm text-orange-500 hover:text-orange-600 mt-3 font-medium"
+            className="block text-center text-sm text-primary-600 hover:text-primary-700 mt-4 font-medium"
           >
             View All Communities
           </Link>
@@ -101,18 +102,18 @@ export default function Sidebar() {
 
       {/* Create Community Section (only for logged-in users) */}
       {currentUser && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-4">
-            <div className="flex items-center space-x-2 mb-3">
-              <Star className="w-5 h-5 text-orange-500" />
-              <h2 className="font-semibold text-gray-900 dark:text-white">Create a Community</h2>
+        <div className="sidebar">
+          <div className="sidebar-section">
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="w-5 h-5 text-primary-500" />
+              <h2 className="sidebar-title">Create a Community</h2>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               Build and grow a community about something you care about
             </p>
             <Link
               to="/create-community"
-              className="block w-full bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-orange-600 transition-colors font-medium text-center"
+              className="btn btn-primary w-full"
             >
               Create Community
             </Link>
@@ -121,10 +122,10 @@ export default function Sidebar() {
       )}
 
       {/* About MemeX Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-white mb-3">About MemeX</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+      <div className="sidebar">
+        <div className="sidebar-section">
+          <h2 className="sidebar-title">About MemeX</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             The ultimate platform for sharing memes, funny content, and engaging with the community.
           </p>
           <div className="text-xs text-gray-500 dark:text-gray-500">

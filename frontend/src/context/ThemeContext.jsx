@@ -18,6 +18,11 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    
+    // Set data-theme attribute for CSS variables
+    document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    
+    // Also keep Tailwind classes for compatibility
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {

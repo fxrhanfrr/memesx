@@ -1,300 +1,179 @@
-# MemeX - Reddit-Style Meme Sharing Platform
+# MemeX - Social Media Platform for Memes
 
-A full-stack web application built with React, Node.js, and Firebase that allows users to share memes, create communities, and engage with content through voting and commenting.
+A modern, full-stack social media application built with React, Node.js, and Firebase for sharing and discovering memes.
 
 ## 🚀 Features
 
-### Authentication
-- Email/password signup and login
-- Google OAuth integration
-- JWT-based session handling
-- User roles (admin and regular user)
+- **Modern UI/UX**: Beautiful, responsive design with dark/light theme support
+- **Real-time Updates**: Live feed updates and notifications
+- **User Authentication**: Secure login/signup with Firebase Auth
+- **Community System**: Create and join communities around interests
+- **Post Management**: Share memes, images, and videos with voting system
+- **Responsive Design**: Mobile-first approach with excellent cross-device support
 
-### Communities (Subreddit-style)
-- Create and join meme communities
-- Community-specific feeds
-- Member management
-- Popular communities discovery
+## 🏗️ Project Structure
 
-### Posts (Memes)
-- Upload images and videos to Firebase Cloud Storage
-- Rich text content with titles and descriptions
-- Tag system for better discovery
-- Upvote/downvote system with hot algorithm
-- Post sorting (Hot, New, Top)
-- Featured posts (admin feature)
-
-### Comments
-- Threaded comment system
-- Add, edit, and delete comments
-- Comment voting
-- Real-time comment counts
-
-### Feed & Discovery
-- Global feed with all communities
-- Community-specific feeds
-- Infinite scroll pagination
-- Advanced search functionality
-- Trending content
-
-### Admin Panel
-- User management (ban/unban users)
-- Content moderation (delete posts/comments)
-- Feature posts
-- Admin dashboard with statistics
-- Promote users to admin
-
-### UI/UX
-- Modern, Reddit-inspired design
-- Fully responsive (desktop + mobile)
-- Dark/light mode toggle
-- Smooth animations and transitions
-- Accessible design patterns
+```
+memex/
+├── frontend/          # React frontend application
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Page components
+│   │   ├── context/       # React context providers
+│   │   ├── hooks/         # Custom React hooks
+│   │   └── styles/        # CSS and styling
+│   ├── package.json
+│   └── vite.config.js
+├── backend/           # Node.js/Express backend API
+│   ├── src/
+│   │   ├── routes/        # API route handlers
+│   │   ├── middlewares/   # Express middlewares
+│   │   └── config/        # Configuration files
+│   └── package.json
+└── package.json       # Root package.json for workspace management
+```
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 18** with Vite for fast development
-- **TailwindCSS** for responsive, utility-first styling
-- **React Router** for client-side routing
-- **Lucide React** for beautiful icons
-- **Firebase SDK** for authentication and storage
+- **React 18** - Modern React with hooks
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Router** - Client-side routing
+- **Lucide React** - Beautiful icons
+- **Firebase** - Authentication and real-time database
 
 ### Backend
-- **Node.js** with Express.js REST API
-- **Firebase Admin SDK** for server-side operations
-- **Firebase Firestore** for database
-- **Firebase Cloud Storage** for media files
-- **Firebase Authentication** for user management
-- **JWT** for secure API authentication
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **Firebase Admin** - Server-side Firebase integration
+- **JWT** - JSON Web Tokens for authentication
+- **Multer** - File upload handling
+- **Helmet** - Security middleware
 
-### Database & Storage
-- **Firebase Firestore** - NoSQL document database
-- **Firebase Cloud Storage** - File storage for images/videos
-- **Firebase Authentication** - User authentication service
-
-## 📁 Project Structure
-
-```
-/
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── context/        # React context providers
-│   │   ├── hooks/          # Custom React hooks
-│   │   └── firebase.js     # Firebase client configuration
-│   └── package.json
-├── backend/                 # Node.js backend API
-│   ├── src/
-│   │   ├── routes/         # API route handlers
-│   │   ├── controllers/    # Business logic
-│   │   ├── models/         # Data models
-│   │   ├── middlewares/    # Express middlewares
-│   │   └── config/         # Configuration files
-│   ├── server.js           # Express server entry point
-│   └── package.json
-└── README.md
-```
-
-## 🚀 Getting Started
+## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Firebase project with Firestore, Authentication, and Storage enabled
+- Node.js 18+ 
+- npm or yarn
+- Firebase project setup
 
-### Firebase Setup
+### Setup Instructions
 
-1. Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd memex
+   ```
 
-2. Enable the following services:
-   - **Authentication**: Enable Email/Password and Google providers
-   - **Firestore Database**: Create in production mode
-   - **Storage**: Enable for file uploads
+2. **Install all dependencies**
+   ```bash
+   npm run install:all
+   ```
 
-3. Generate Firebase Admin SDK credentials:
-   - Go to Project Settings > Service Accounts
-   - Generate new private key
-   - Download the JSON file
+3. **Environment Setup**
+   - Create `.env` file in the backend directory
+   - Add your Firebase configuration
+   - Set up environment variables
 
-4. Get your Firebase web app configuration:
-   - Go to Project Settings > General
-   - Add a web app and copy the config object
+4. **Start Development Servers**
+   ```bash
+   # Start both frontend and backend
+   npm run dev
+   
+   # Or start individually
+   npm run dev:frontend    # Frontend on port 3000
+   npm run dev:backend     # Backend on port 5000
+   ```
 
-### Backend Setup
+## 🎨 Customization
 
-1. Navigate to the backend directory:
-```bash
-cd backend
+The application uses a comprehensive CSS system with CSS variables for easy customization. See `frontend/CSS_CUSTOMIZATION.md` for detailed customization guide.
+
+### Quick Customization Examples
+
+**Change Theme Colors:**
+```css
+:root {
+  --primary-500: #3b82f6;  /* Change to blue */
+  --primary-600: #2563eb;
+}
 ```
 
-2. Install dependencies:
-```bash
-npm install
+**Adjust Spacing:**
+```css
+:root {
+  --space-md: 0.75rem;     /* More compact */
+  --space-lg: 2rem;        /* More spacious */
+}
 ```
 
-3. Create environment file:
-```bash
-cp .env.example .env
-```
+## 📱 Available Scripts
 
-4. Configure your `.env` file with Firebase credentials:
-```env
-# Firebase Admin SDK
-FIREBASE_PROJECT_ID=your-project-id
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY\n-----END PRIVATE KEY-----\n"
-FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@your-project.iam.gserviceaccount.com
+### Root Level
+- `npm run dev` - Start both frontend and backend
+- `npm run install:all` - Install dependencies for all packages
+- `npm run build` - Build frontend for production
 
-# JWT Secret
-JWT_SECRET=your-super-secret-jwt-key-here
+### Frontend
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
 
-# Server Config
-PORT=5000
-NODE_ENV=development
+### Backend
+- `npm run dev` - Start development server with nodemon
+- `npm start` - Start production server
 
-# Frontend URL (for CORS)
-FRONTEND_URL=http://localhost:5173
-```
+## 🔧 Development
 
-5. Start the backend server:
-```bash
-npm run dev
-```
+### Frontend Development
+- Located in `frontend/` directory
+- Uses Vite for fast development
+- Hot module replacement enabled
+- Tailwind CSS for styling
 
-The backend API will be available at `http://localhost:5000`
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create environment file:
-```bash
-cp .env.example .env
-```
-
-4. Configure your `.env` file with Firebase web config:
-```env
-VITE_API_URL=http://localhost:5000
-VITE_FIREBASE_API_KEY=your-api-key
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
-```
-
-5. Start the frontend development server:
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173`
-
-## 📚 API Documentation
-
-### Authentication Endpoints
-- `POST /api/auth/register` - Create user profile
-- `GET /api/auth/profile` - Get current user profile
-- `PUT /api/auth/profile` - Update user profile
-- `POST /api/auth/verify` - Verify JWT token
-
-### Posts Endpoints
-- `GET /api/posts` - Get posts with pagination and sorting
-- `GET /api/posts/:id` - Get single post
-- `POST /api/posts` - Create new post (with file upload)
-- `POST /api/posts/:id/vote` - Vote on post
-- `DELETE /api/posts/:id` - Delete post
-
-### Comments Endpoints
-- `GET /api/comments/post/:postId` - Get comments for post
-- `POST /api/comments` - Create comment
-- `POST /api/comments/:id/vote` - Vote on comment
-- `PUT /api/comments/:id` - Edit comment
-- `DELETE /api/comments/:id` - Delete comment
-
-### Communities Endpoints
-- `GET /api/communities` - Get all communities
-- `GET /api/communities/:name` - Get single community
-- `POST /api/communities` - Create community
-- `POST /api/communities/:id/join` - Join community
-- `POST /api/communities/:id/leave` - Leave community
-
-### Admin Endpoints
-- `GET /api/admin/stats` - Get admin dashboard stats
-- `POST /api/admin/users/:uid/ban` - Ban user
-- `POST /api/admin/users/:uid/unban` - Unban user
-- `DELETE /api/admin/posts/:id` - Delete post (admin)
-- `POST /api/admin/posts/:id/feature` - Feature post
-
-## 🔒 Security Features
-
-- JWT-based authentication
-- Firebase Admin SDK for secure server operations
-- Input validation and sanitization
-- Rate limiting on API endpoints
-- CORS configuration
-- Secure file upload handling
-- Role-based access control
-
-## 🎨 Design Features
-
-- Modern, clean interface inspired by Reddit
-- Fully responsive design for all devices
-- Dark/light mode support
-- Smooth animations and micro-interactions
-- Accessible design with proper ARIA labels
-- Loading states and error handling
-- Infinite scroll for better performance
+### Backend Development
+- Located in `backend/` directory
+- Express.js API server
+- Firebase integration
+- JWT authentication
 
 ## 🚀 Deployment
 
-### Backend Deployment
-The backend can be deployed to platforms like:
-- Heroku
-- Railway
-- Render
-- Google Cloud Run
-- AWS Elastic Beanstalk
+### Frontend
+```bash
+cd frontend
+npm run build
+# Deploy dist/ folder to your hosting service
+```
 
-### Frontend Deployment
-The frontend can be deployed to:
-- Vercel
-- Netlify
-- Firebase Hosting
-- AWS S3 + CloudFront
-
-### Environment Variables
-Make sure to set all required environment variables in your deployment platform.
+### Backend
+```bash
+cd backend
+npm start
+# Or use PM2 for production
+pm2 start src/server.js
+```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## 📝 License
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- Inspired by Reddit's design and functionality
-- Built with modern web technologies
-- Firebase for backend infrastructure
-- TailwindCSS for styling system
-- Lucide for beautiful icons
+If you encounter any issues or have questions:
+1. Check the documentation
+2. Search existing issues
+3. Create a new issue with detailed information
 
 ---
 
-**MemeX** - Share your best memes with the world! 🎭✨#   m e m e s x  
- 
+Built with ❤️ using modern web technologies
