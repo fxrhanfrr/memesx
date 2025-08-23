@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import { AuthProvider } from 'project\frontend\src\context\AuthContext.jsx';
+import { ThemeProvider } from 'project\frontend\src\context\ThemeContext.jsx';
+import Navbar from 'src\components\Navbar.jsx';
+import Home from 'project\frontend\src\pages\Home.jsx';
+import Login from 'project\frontend\src\pages\Login.jsx';
+import Signup from 'project\frontend\src\pages\Signup.jsx';
 import CreatePost from './pages/CreatePost';
 import PostDetail from './pages/PostDetail';
 import UserProfile from './pages/UserProfile';

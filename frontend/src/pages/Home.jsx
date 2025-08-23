@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useInfiniteScroll } from '../hooks/useApi';
-import PostCard from '../components/PostCard';
-import Sidebar from '../components/Sidebar';
+import { useInfiniteScroll } from 'project\frontend\src\hooks/useInfiniteScroll.jsx';
+import PostCard from 'project\frontend\src\components\PostCard.jsx';
+import Sidebar from 'project\frontend\src\components\Sidebar.jsx';
 import { Loader, TrendingUp, Clock, Award } from 'lucide-react';
 
 export default function Home() {
