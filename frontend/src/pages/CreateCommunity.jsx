@@ -17,10 +17,17 @@ import { useAuth } from '../context/AuthContext';
 import { useApi } from '../hooks/useInfiniteScroll';
 
 export default function CreateCommunity() {
-  const { currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
   const { apiCall } = useApi();
   const navigate = useNavigate();
   const nameInputRef = useRef(null);
+
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    if (currentUser && userProfile && !userProfile.displayName) {
+      navigate('/profile-setup');
+    }
+  }, [currentUser, userProfile, navigate]);
 
   // State for form inputs
   const [name, setName] = useState('');
@@ -187,37 +194,40 @@ export default function CreateCommunity() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="create-page-container">
+      {/* Animated Background */}
+      <div className="create-page-background">
+        <div className="create-page-bg-circle"></div>
+        <div className="create-page-bg-circle"></div>
+        <div className="create-page-bg-circle"></div>
+      </div>
+
+      <div className="create-page-content">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="create-header">
+          <div className="create-header-content">
+            <div className="create-header-left">
               <button
                 onClick={() => navigate('/communities')}
-                className="btn btn-ghost p-2"
+                className="create-back-button"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Create a New Community
-                </h1>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">
-                  Build a space for your community to share and connect
-                </p>
+                <h1 className="create-title">Create a New Community</h1>
+                <p className="create-subtitle">Build a space for your community to share and connect</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="create-auto-save">
               {autoSaveStatus === 'saving' && (
-                <div className="flex items-center text-sm text-gray-500">
-                  <Loader className="w-4 h-4 mr-2 animate-spin" />
+                <div className="create-auto-save-saving">
+                  <Loader />
                   Saving...
                 </div>
               )}
               {autoSaveStatus === 'saved' && (
-                <div className="flex items-center text-sm text-green-600">
-                  <CheckCircle className="w-4 h-4 mr-2" />
+                <div className="create-auto-save-saved">
+                  <CheckCircle />
                   Saved
                 </div>
               )}
@@ -226,35 +236,35 @@ export default function CreateCommunity() {
         </div>
 
         {/* Main Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="create-form-container">
           {/* Status Messages */}
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800 p-4">
-              <div className="flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-500 mr-3" />
-                <span className="text-red-700 dark:text-red-400">{error}</span>
+            <div className="create-status-message create-status-error">
+              <div className="create-status-content">
+                <AlertCircle />
+                <span>{error}</span>
               </div>
             </div>
           )}
 
           {success && (
-            <div className="bg-green-50 dark:bg-green-900/20 border-b border-green-200 dark:border-green-800 p-4">
-              <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                <span className="text-green-700 dark:text-green-400">{success}</span>
+            <div className="create-status-message create-status-success">
+              <div className="create-status-content">
+                <CheckCircle />
+                <span>{success}</span>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="create-form">
             {/* Community Name */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <div className="create-form-group">
+              <label htmlFor="name" className="create-label">
                 Community Name *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Hash className="h-5 w-5 text-gray-400" />
+                  <Hash />
                 </div>
                 <input
                   id="name"
@@ -265,27 +275,27 @@ export default function CreateCommunity() {
                   placeholder="e.g., cool_memes"
                   required
                   maxLength={21}
-                  className="form-input w-full pl-10"
+                  className="create-input pl-10"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                  {nameChecking && <Loader className="w-4 h-4 animate-spin text-gray-400" />}
-                  {nameAvailable === true && <CheckCircle className="w-4 h-4 text-green-500" />}
-                  {nameAvailable === false && <X className="w-4 h-4 text-red-500" />}
+                  {nameChecking && <Loader className="create-loading-spinner" />}
+                  {nameAvailable === true && <CheckCircle className="text-green-500" />}
+                  {nameAvailable === false && <X className="text-red-500" />}
                 </div>
               </div>
-              <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+              <div className="create-char-count">
                 <span>{name.length}/21 characters</span>
                 {nameAvailable === true && <span className="text-green-600">Name available</span>}
                 {nameAvailable === false && <span className="text-red-600">Name taken</span>}
               </div>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="create-char-count">
                 Only lowercase letters, numbers, and underscores allowed
               </p>
             </div>
 
             {/* Display Name */}
-            <div>
-              <label htmlFor="displayName" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <div className="create-form-group">
+              <label htmlFor="displayName" className="create-label">
                 Display Name *
               </label>
               <input
@@ -296,23 +306,23 @@ export default function CreateCommunity() {
                 placeholder="e.g., Cool Memes"
                 required
                 maxLength={50}
-                className="form-input w-full"
+                className="create-input"
               />
-              <div className="mt-1 text-xs text-gray-500 text-right">
+              <div className="create-char-count">
                 {displayName.length}/50 characters
               </div>
             </div>
 
             {/* Category */}
-            <div>
-              <label htmlFor="category" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <div className="create-form-group">
+              <label htmlFor="category" className="create-label">
                 Category
               </label>
               <select
                 id="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="form-input w-full"
+                className="create-select"
               >
                 {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -323,8 +333,8 @@ export default function CreateCommunity() {
             </div>
 
             {/* Description */}
-            <div>
-              <label htmlFor="description" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <div className="create-form-group">
+              <label htmlFor="description" className="create-label">
                 Description *
               </label>
               <textarea
@@ -335,98 +345,89 @@ export default function CreateCommunity() {
                 placeholder="Tell us what your community is about..."
                 required
                 maxLength={500}
-                className="form-input w-full"
+                className="create-textarea"
               ></textarea>
-              <div className="mt-1 text-xs text-gray-500 text-right">
+              <div className="create-char-count">
                 {description.length}/500 characters
               </div>
             </div>
 
             {/* Community Settings */}
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">
-                <Shield className="w-4 h-4 mr-2" />
+            <div className="create-settings-section">
+              <h3 className="create-settings-title">
+                <Shield />
                 Community Settings
               </h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Public Community
-                    </label>
-                    <p className="text-xs text-gray-500">Anyone can view and join</p>
+                <div className="create-settings-item">
+                  <div className="create-settings-info">
+                    <h4>Public Community</h4>
+                    <p>Anyone can view and join</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="create-toggle">
                     <input
                       type="checkbox"
                       checked={isPublic}
                       onChange={(e) => setIsPublic(e.target.checked)}
-                      className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                    <span className="create-toggle-slider"></span>
                   </label>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Allow Images
-                    </label>
-                    <p className="text-xs text-gray-500">Members can post images</p>
+                <div className="create-settings-item">
+                  <div className="create-settings-info">
+                    <h4>Allow Images</h4>
+                    <p>Members can post images</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="create-toggle">
                     <input
                       type="checkbox"
                       checked={allowImages}
                       onChange={(e) => setAllowImages(e.target.checked)}
-                      className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                    <span className="create-toggle-slider"></span>
                   </label>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Allow Videos
-                    </label>
-                    <p className="text-xs text-gray-500">Members can post videos</p>
+                <div className="create-settings-item">
+                  <div className="create-settings-info">
+                    <h4>Allow Videos</h4>
+                    <p>Members can post videos</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="create-toggle">
                     <input
                       type="checkbox"
                       checked={allowVideos}
                       onChange={(e) => setAllowVideos(e.target.checked)}
-                      className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+                    <span className="create-toggle-slider"></span>
                   </label>
                 </div>
               </div>
             </div>
             
             {/* Rules Section */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <div className="create-form-group">
+              <label className="create-label">
                 Community Rules ({rules.filter(r => r.trim()).length}/10)
               </label>
-              <div className="space-y-3">
+              <div className="create-rules-container">
                 {rules.map((rule, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <span className="text-gray-500 dark:text-gray-400 font-medium text-sm">{index + 1}.</span>
+                  <div key={index} className="create-rule-item">
+                    <span className="create-rule-number">{index + 1}</span>
                     <input
                       type="text"
                       value={rule}
                       onChange={(e) => handleRuleChange(index, e.target.value)}
                       placeholder="Enter a community rule"
                       maxLength={200}
-                      className="form-input flex-1"
+                      className="create-rule-input"
                     />
                     {rules.length > 1 && (
                       <button
                         type="button"
                         onClick={() => handleRemoveRule(index)}
-                        className="btn btn-ghost p-2 text-red-500 hover:text-red-700"
+                        className="create-rule-remove"
                       >
-                        <X className="w-4 h-4" />
+                        <X />
                       </button>
                     )}
                   </div>
@@ -436,36 +437,36 @@ export default function CreateCommunity() {
                 <button
                   type="button"
                   onClick={handleAddRule}
-                  className="mt-3 btn btn-secondary"
+                  className="create-add-rule-button"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
+                  <Plus />
                   Add Rule
                 </button>
               )}
             </div>
 
             {/* Submit Button */}
-            <div className="flex space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="create-form-actions">
               <button
                 type="button"
                 onClick={() => navigate('/communities')}
-                className="btn btn-secondary flex-1"
+                className="create-cancel-button"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || !name.trim() || !displayName.trim() || !description.trim() || nameAvailable === false}
-                className="btn btn-primary flex-1"
+                className="create-submit-button"
               >
                 {loading ? (
                   <>
-                    <Loader className="h-5 w-5 mr-3 animate-spin" />
+                    <div className="create-loading-spinner"></div>
                     Creating Community...
                   </>
                 ) : (
                   <>
-                    <Users className="h-5 w-5 mr-3" />
+                    <Users />
                     Create Community
                   </>
                 )}

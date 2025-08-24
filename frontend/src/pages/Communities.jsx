@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Loader, Users, Award, Search } from 'lucide-react';
 import { useInfiniteScroll, useApi } from '../hooks/useInfiniteScroll';
+import { useAuth } from '../context/AuthContext';
 
 // This component fetches and displays a list of all communities with search functionality.
 export default function Communities() {
+  const navigate = useNavigate();
+  const { currentUser, userProfile } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const { apiCall } = useApi();
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    if (currentUser && userProfile && !userProfile.displayName) {
+      navigate('/profile-setup');
+    }
+  }, [currentUser, userProfile, navigate]);
 
   // Debounce the search query to avoid excessive API calls while typing
   useEffect(() => {
@@ -35,73 +45,81 @@ export default function Communities() {
   }, [debouncedSearchQuery]);
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">All Communities</h1>
-        <div className="mt-4 sm:mt-0 w-full sm:w-1/2 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Find a community..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 dark:text-white"
-          />
-        </div>
+    <div className="page-container">
+      {/* Animated Background */}
+      <div className="page-background">
+        <div className="page-bg-circle"></div>
+        <div className="page-bg-circle"></div>
+        <div className="page-bg-circle"></div>
       </div>
-      
-      {/* Communities List */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-        {loading && communities.length === 0 ? (
-          <div className="flex justify-center items-center py-8">
-            <Loader className="w-8 h-8 animate-spin text-orange-500" />
+
+      <div className="page-content">
+        {/* Page Header */}
+        <div className="communities-header">
+          <h1 className="communities-title">All Communities</h1>
+          <div className="communities-search">
+            <input
+              type="text"
+              placeholder="Find a community..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="communities-search-input"
+            />
+            <Search className="communities-search-icon" />
           </div>
-        ) : (
-          <>
-            {communities.length > 0 ? (
-              communities.map((community) => (
-                <Link
-                  key={community.id}
-                  to={`/r/${community.name}`}
-                  className="flex items-center space-x-4 p-4 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
-                    {community.displayName.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white truncate">
-                      r/{community.name}
-                    </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                      {community.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-400 flex-shrink-0">
-                    <span className="flex items-center space-x-1 text-sm">
-                      <Users className="w-4 h-4" />
+        </div>
+        
+        {/* Communities List */}
+        <div className="communities-list">
+          {loading && communities.length === 0 ? (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+            </div>
+          ) : (
+            <>
+              {communities.length > 0 ? (
+                communities.map((community) => (
+                  <Link
+                    key={community.id}
+                    to={`/r/${community.name}`}
+                    className="community-item-modern"
+                  >
+                    <div className="community-avatar-modern">
+                      {community.displayName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="community-info-modern">
+                      <h2 className="community-name-modern">
+                        r/{community.name}
+                      </h2>
+                      <p className="community-description-modern">
+                        {community.description}
+                      </p>
+                    </div>
+                    <div className="community-members-modern">
+                      <Users className="community-members-icon" />
                       <span>{community.memberCount.toLocaleString()}</span>
-                    </span>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <p className="text-center text-gray-500 dark:text-gray-400 py-6">
-                No communities found.
-              </p>
-            )}
-            {hasMore && !loading && (
-              <div className="text-center">
-                <button
-                  onClick={loadMore}
-                  className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors"
-                >
-                  Load More
-                </button>
-              </div>
-            )}
-          </>
-        )}
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <h3 className="empty-state-title">No communities found</h3>
+                  <p className="empty-state-text">Try adjusting your search terms or browse all communities.</p>
+                </div>
+              )}
+              {hasMore && !loading && (
+                <div className="load-more-container">
+                  <button
+                    onClick={loadMore}
+                    className="load-more-button"
+                  >
+                    Load More
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -3,17 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll.jsx';
 import PostCard from '../components/PostCard.jsx';
 import Sidebar from '../components/Sidebar.jsx';
-import { Loader, TrendingUp, Clock, Award, Sparkles, Flame, Star, Plus } from 'lucide-react';
+import { Loader, TrendingUp, Clock, Award, Flame, Star, TrendingUp as TrendingIcon, Zap, Crown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export default function Home() {
-  const [sortBy, setSortBy] = useState('hot');
-  const [animatePosts, setAnimatePosts] = useState(false);
+export default function Popular() {
   const navigate = useNavigate();
+  const [sortBy, setSortBy] = useState('popular');
   const { currentUser, userProfile } = useAuth();
   const { data: posts, loading, hasMore, loadMore } = useInfiniteScroll(`/api/posts?sort=${sortBy}`);
 
-  // Check if current user needs to complete profile setup
+  // Check if user needs to complete profile setup
   useEffect(() => {
     if (currentUser && userProfile && !userProfile.displayName) {
       navigate('/profile-setup');
@@ -21,9 +20,27 @@ export default function Home() {
   }, [currentUser, userProfile, navigate]);
 
   const sortOptions = [
-    { value: 'hot', label: 'Hot', icon: TrendingUp },
-    { value: 'new', label: 'New', icon: Clock },
-    { value: 'top', label: 'Top', icon: Award }
+    { 
+      value: 'popular', 
+      label: 'Popular', 
+      icon: TrendingUp,
+      description: 'Most upvoted content',
+      color: 'from-orange-500 to-red-500'
+    },
+    { 
+      value: 'trending', 
+      label: 'Trending', 
+      icon: Flame,
+      description: 'Rising in popularity',
+      color: 'from-red-500 to-pink-500'
+    },
+    { 
+      value: 'top', 
+      label: 'Top', 
+      icon: Crown,
+      description: 'All-time best posts',
+      color: 'from-yellow-500 to-orange-500'
+    }
   ];
 
   const handleVote = (postId, voteType) => {
@@ -43,28 +60,38 @@ export default function Home() {
       <div className="page-content">
         <div className="page-layout">
           <main className="page-main">
-            {/* Hero Section */}
+            {/* Enhanced Hero Section */}
             <div className="hero-section">
               <div className="hero-sparkles">
-                <Sparkles className="hero-sparkle" />
-                <Sparkles className="hero-sparkle" />
-                <Sparkles className="hero-sparkle" />
+                <Flame className="hero-sparkle text-orange-500" />
+                <TrendingIcon className="hero-sparkle text-red-500" />
+                <Crown className="hero-sparkle text-yellow-500" />
               </div>
-              <h1 className="hero-title">Welcome to MemeX</h1>
+              <h1 className="hero-title">Popular Content</h1>
               <p className="hero-subtitle">
-                Discover, create, and share the best memes with the world!
+                Discover the most trending and popular memes that everyone is talking about! 
+                From viral sensations to community favorites, find what's hot right now.
               </p>
               {currentUser && (
-                <Link to="/create" className="hero-button">
-                  <Plus />
-                  Create Your First Post
-                </Link>
+                <div className="hero-actions">
+                  <Link to="/create" className="hero-button">
+                    <Zap className="w-5 h-5" />
+                    Create Trending Content
+                  </Link>
+                  <Link to="/communities" className="hero-button-secondary">
+                    <TrendingUp className="w-5 h-5" />
+                    Explore Communities
+                  </Link>
+                </div>
               )}
             </div>
 
-            {/* Sort Options */}
+            {/* Enhanced Sort Options */}
             <div className="sort-section">
-              <div className="sort-label">Sort by:</div>
+              <div className="sort-header">
+                <div className="sort-label">Sort by:</div>
+                <div className="sort-description">Choose how you want to discover content</div>
+              </div>
               <div className="sort-options">
                 {sortOptions.map((option, index) => {
                   const Icon = option.icon;
@@ -79,8 +106,13 @@ export default function Home() {
                       }`}
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
-                      <Icon className="sort-icon" />
-                      <span>{option.label}</span>
+                      <div className="sort-button-content">
+                        <Icon className="sort-icon" />
+                        <div className="sort-text">
+                          <span className="sort-label-text">{option.label}</span>
+                          <span className="sort-description-text">{option.description}</span>
+                        </div>
+                      </div>
                     </button>
                   );
                 })}
@@ -102,13 +134,25 @@ export default function Home() {
               {loading && (
                 <div className="loading-container">
                   <div className="loading-spinner"></div>
+                  <p className="loading-text">Loading amazing content...</p>
                 </div>
               )}
               
               {!loading && posts.length === 0 && (
                 <div className="empty-state">
-                  <h3 className="empty-state-title">No posts yet</h3>
-                  <p className="empty-state-text">Be the first to share something amazing!</p>
+                  <div className="empty-state-icon">
+                    <TrendingUp className="w-16 h-16 text-gray-400" />
+                  </div>
+                  <h3 className="empty-state-title">No popular posts yet</h3>
+                  <p className="empty-state-text">
+                    Be the first to create trending content! Your memes could be the next big thing.
+                  </p>
+                  {currentUser && (
+                    <Link to="/create" className="empty-state-button">
+                      <Zap className="w-5 h-5" />
+                      Create Your First Post
+                    </Link>
+                  )}
                 </div>
               )}
               
@@ -118,7 +162,8 @@ export default function Home() {
                     onClick={loadMore}
                     className="load-more-button"
                   >
-                    Load More
+                    <TrendingUp className="w-5 h-5" />
+                    Load More Popular Content
                   </button>
                 </div>
               )}

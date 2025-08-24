@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Login() {
@@ -44,118 +44,128 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="navbar-logo">M</div>
-        </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-          Sign in to MemeX
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?{' '}
-          <Link to="/signup" className="font-medium text-primary-600 hover:text-primary-500">
-            Sign up
-          </Link>
-        </p>
+    <div className="login-container">
+      {/* Animated Background */}
+      <div className="login-background">
+        <div className="login-bg-circle"></div>
+        <div className="login-bg-circle"></div>
+        <div className="login-bg-circle"></div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="card">
-          <div className="card-body">
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              {error && (
-                <div className="bg-error-50 dark:bg-error-900/50 border border-error-200 dark:border-error-800 text-error-600 dark:text-error-400 px-4 py-3 rounded-md">
-                  {error}
-                </div>
-              )}
-              
-              <div className="form-group">
-                <label htmlFor="email" className="form-label">
-                  Email address
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-input"
-                  />
-                </div>
-              </div>
+      <div className="login-content">
+        {/* Header */}
+        <div className="login-header">
+          <div className="login-logo">M</div>
+          <h1 className="login-title">
+            Sign in to MemeX
+          </h1>
+          <p className="login-subtitle">
+            Welcome back! Please sign in to your account
+          </p>
+        </div>
 
-              <div className="form-group">
-                <label htmlFor="password" className="form-label">
-                  Password
-                </label>
-                <div className="mt-1 relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="form-input pr-10"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-              </div>
+        {/* Main Card */}
+        <div className="login-card">
+          {/* Error Message */}
+          {error && (
+            <div className="login-error">
+              <p>{error}</p>
+            </div>
+          )}
 
-              <div>
+          <form onSubmit={handleSubmit} className="login-form">
+            {/* Email Field */}
+            <div className="login-field">
+              <label className="login-label">
+                Email address
+              </label>
+              <div className="login-input-wrapper">
+                <Mail className="login-icon" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="login-input"
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="login-field">
+              <label className="login-label">
+                Password
+              </label>
+              <div className="login-input-wrapper">
+                <Lock className="login-icon" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="login-input"
+                  placeholder="Enter your password"
+                />
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn btn-primary w-full"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="login-toggle-password"
                 >
-                  {loading ? 'Signing in...' : 'Sign in'}
+                  {showPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
+            </div>
 
-              <div className="mt-6">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300 dark:border-gray-600" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">Or continue with</span>
-                  </div>
-                </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="login-submit"
+            >
+              {loading ? (
+                <div className="login-loading"></div>
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight />
+                </>
+              )}
+            </button>
+          </form>
 
-                <div className="mt-6">
-                  <button
-                    type="button"
-                    onClick={handleGoogleLogin}
-                    disabled={loading}
-                    className="btn btn-secondary w-full"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                      <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                      <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                      <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    <span className="ml-2">Sign in with Google</span>
-                  </button>
-                </div>
-              </div>
-            </form>
+          {/* Divider */}
+          <div className="login-divider">
+            <span className="login-divider-text">
+              or continue with
+            </span>
           </div>
+
+          {/* Google Sign In */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="login-google"
+          >
+            <svg viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+          </button>
+        </div>
+
+        {/* Footer */}
+        <div className="login-footer">
+          <p>
+            Don't have an account?{' '}
+            <Link to="/signup" className="login-link">
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>

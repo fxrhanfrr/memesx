@@ -13,6 +13,13 @@ export default function Community() {
   const { currentUser, userProfile, fetchUserProfile } = useAuth();
   const { apiCall } = useApi();
 
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    if (currentUser && userProfile && !userProfile.displayName) {
+      navigate('/profile-setup');
+    }
+  }, [currentUser, userProfile, navigate]);
+
   // State for community data
   const [community, setCommunity] = useState(null);
   const [loading, setLoading] = useState(true);

@@ -13,6 +13,13 @@ export default function PostDetail() {
   const { currentUser, userProfile } = useAuth();
   const { apiCall } = useApi();
 
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    if (currentUser && userProfile && !userProfile.displayName) {
+      navigate('/profile-setup');
+    }
+  }, [currentUser, userProfile, navigate]);
+
   // State for post and comment data
   const { data: postData, loading: postLoading, error: postError } = useFetch(`/api/posts/${id}`);
   const [comments, setComments] = useState([]);

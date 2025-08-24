@@ -43,6 +43,13 @@ export default function Navbar() {
     }
   };
 
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    if (currentUser && userProfile && !userProfile.displayName) {
+      navigate('/profile-setup');
+    }
+  }, [currentUser, userProfile, navigate]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -53,213 +60,211 @@ export default function Navbar() {
 
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="container">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="navbar-brand">
-            <div className="navbar-logo">M</div>
-            <span>MemeX</span>
-          </Link>
+      <div className="navbar-container">
+        {/* Logo */}
+        <Link to="/" className="navbar-brand">
+          <div className="navbar-logo">M</div>
+          <span>MemeX</span>
+        </Link>
 
-          {/* Search Bar - Desktop */}
-          <div className="hidden md:flex navbar-search">
-            <form onSubmit={handleSearch} className="w-full">
+        {/* Search Bar - Desktop */}
+        <div className="navbar-search">
+          <form onSubmit={handleSearch}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search MemeX"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="navbar-search-input"
+              />
+              <Search className="navbar-search-icon" />
+            </div>
+          </form>
+        </div>
+
+        {/* Desktop Menu */}
+        <div className="navbar-actions">
+          <button
+            onClick={toggleTheme}
+            className="navbar-btn navbar-btn-ghost"
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun className="navbar-btn-icon" /> : <Moon className="navbar-btn-icon" />}
+          </button>
+
+          {currentUser ? (
+            <>
+              <Link
+                to="/"
+                className="navbar-btn navbar-btn-ghost"
+                aria-label="Home"
+              >
+                <Home className="navbar-btn-icon" />
+              </Link>
+              <Link
+                to="/create"
+                className="navbar-btn navbar-btn-primary"
+              >
+                <Plus className="navbar-btn-icon" />
+                <span>Create</span>
+              </Link>
+              <div className="navbar-user">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="navbar-user-btn"
+                >
+                  {userProfile?.photoURL ? (
+                    <img
+                      src={userProfile.photoURL}
+                      alt="Profile"
+                      className="navbar-user-avatar"
+                    />
+                  ) : (
+                    <div className="navbar-user-placeholder">
+                      <User className="w-4 h-4" />
+                    </div>
+                  )}
+                  <span className="navbar-user-name">
+                    {userProfile?.displayName || 'User'}
+                  </span>
+                </button>
+                {showUserMenu && (
+                  <div className="navbar-user-menu">
+                    <Link
+                      to={`/user/${currentUser.uid}`}
+                      className="navbar-user-menu-item"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <User className="navbar-user-menu-icon" />
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="navbar-user-menu-item"
+                    >
+                      <LogOut className="navbar-user-menu-icon" />
+                      Log out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="navbar-actions">
+              <Link
+                to="/login"
+                className="navbar-btn navbar-btn-ghost"
+              >
+                Log In
+              </Link>
+              <Link
+                to="/signup"
+                className="navbar-btn navbar-btn-primary"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          className="navbar-mobile-btn"
+          aria-label="Toggle mobile menu"
+        >
+          {showMobileMenu ? <X className="navbar-btn-icon" /> : <Menu className="navbar-btn-icon" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {showMobileMenu && (
+        <div className="navbar-mobile-menu">
+          {/* Mobile Search */}
+          <div className="navbar-mobile-search">
+            <form onSubmit={handleSearch}>
               <div className="relative">
-                <Search className="navbar-search-icon" />
                 <input
                   type="text"
                   placeholder="Search MemeX"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
+                  className="navbar-search-input"
                 />
+                <Search className="navbar-search-icon" />
               </div>
             </form>
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Mobile Navigation */}
+          <div className="navbar-mobile-actions">
             <button
               onClick={toggleTheme}
-              className="btn btn-ghost"
-              aria-label="Toggle theme"
+              className="navbar-mobile-btn-item"
             >
-              {isDark ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+              {isDark ? <Sun className="navbar-btn-icon" /> : <Moon className="navbar-btn-icon" />}
+              {isDark ? 'Light' : 'Dark'}
             </button>
 
             {currentUser ? (
               <>
                 <Link
                   to="/"
-                  className="btn btn-ghost"
-                  aria-label="Home"
+                  className="navbar-mobile-btn-item"
+                  onClick={() => setShowMobileMenu(false)}
                 >
-                  <Home className="w-6 h-6" />
+                  <Home className="navbar-btn-icon" />
+                  Home
                 </Link>
                 <Link
                   to="/create"
-                  className="btn btn-primary"
+                  className="navbar-mobile-btn-item navbar-mobile-btn-primary"
+                  onClick={() => setShowMobileMenu(false)}
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Create</span>
+                  <Plus className="navbar-btn-icon" />
+                  Create
                 </Link>
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    {userProfile?.photoURL ? (
-                      <img
-                        src={userProfile.photoURL}
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-white" />
-                      </div>
-                    )}
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {userProfile?.displayName || 'User'}
-                    </span>
-                  </button>
-                  {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg py-1 border dark:border-gray-700 animate-slide-down">
-                      <Link
-                        to={`/user/${currentUser.uid}`}
-                        className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <User className="w-4 h-4 mr-3" />
-                        Profile
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                      >
-                        <LogOut className="w-4 h-4 mr-3" />
-                        Log out
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  to={`/user/${currentUser.uid}`}
+                  className="navbar-mobile-btn-item"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <User className="navbar-btn-icon" />
+                  Profile
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setShowMobileMenu(false);
+                  }}
+                  className="navbar-mobile-btn-item"
+                >
+                  <LogOut className="navbar-btn-icon" />
+                  Logout
+                </button>
               </>
             ) : (
-              <div className="flex items-center gap-3">
+              <>
                 <Link
                   to="/login"
-                  className="btn btn-ghost"
+                  className="navbar-mobile-btn-item"
+                  onClick={() => setShowMobileMenu(false)}
                 >
                   Log In
                 </Link>
                 <Link
                   to="/signup"
-                  className="btn btn-primary"
+                  className="navbar-mobile-btn-item navbar-mobile-btn-primary"
+                  onClick={() => setShowMobileMenu(false)}
                 >
                   Sign Up
                 </Link>
-              </div>
+              </>
             )}
           </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="btn btn-ghost"
-              aria-label="Toggle mobile menu"
-            >
-              {showMobileMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
         </div>
-
-        {/* Mobile Menu - Horizontal Layout */}
-        {showMobileMenu && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4 animate-slide-down">
-            {/* Mobile Search */}
-            <form onSubmit={handleSearch} className="mb-4">
-              <div className="relative">
-                <Search className="navbar-search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search MemeX"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="form-input w-full pl-10"
-                />
-              </div>
-            </form>
-
-            {/* Mobile Navigation - Horizontal */}
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={toggleTheme}
-                className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
-              >
-                {isDark ? <Sun className="w-4 h-4 mr-2" /> : <Moon className="w-4 h-4 mr-2" />}
-                {isDark ? 'Light' : 'Dark'}
-              </button>
-
-              {currentUser ? (
-                <>
-                  <Link
-                    to="/"
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <Home className="w-4 h-4 mr-2" />
-                    Home
-                  </Link>
-                  <Link
-                    to="/create"
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create
-                  </Link>
-                  <Link
-                    to={`/user/${currentUser.uid}`}
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setShowMobileMenu(false);
-                    }}
-                    className="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md text-sm"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="flex items-center px-3 py-2 text-primary-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md font-medium text-sm"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="flex items-center px-3 py-2 bg-primary-500 text-white rounded-md font-medium text-sm"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </nav>
   );
 }

@@ -3,13 +3,22 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Loader, Search as SearchIcon, Users, Award } from 'lucide-react';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import PostCard from '../components/PostCard';
+import { useAuth } from '../context/AuthContext';
 
 // This component handles the search results page, fetching results
 // based on the query parameter in the URL.
 export default function Search() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser, userProfile } = useAuth();
   const query = new URLSearchParams(location.search).get('q') || '';
+
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    if (currentUser && userProfile && !userProfile.displayName) {
+      navigate('/profile-setup');
+    }
+  }, [currentUser, userProfile, navigate]);
 
   const [searchQuery, setSearchQuery] = useState(query);
   const [debouncedQuery, setDebouncedQuery] = useState(query);
